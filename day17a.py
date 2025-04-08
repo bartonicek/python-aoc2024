@@ -16,9 +16,7 @@ instructions = [int(x) for x in ps.split(": ")[1].split(",")]
 class VM:
     instructions: List[int]
     instruction_pointer: int
-    registers: Tuple[int, int, int]   
-
-vm = VM(instructions, 0, registers)
+    registers: List[int]  
 
 def eval_operand(vm: VM, x: int):
     if x >= 4 and x < 7: return vm.registers[x - 4]
@@ -36,9 +34,7 @@ def cdv(vm: VM, x: int): vm.registers[2] = vm.registers[0] >> x
 def bst(vm: VM, x: int): vm.registers[1] = x % 8
 def bxl(vm: VM, x: int): vm.registers[1] ^= x
 def bxc(vm: VM, x: int): vm.registers[1] ^= vm.registers[2]
-
-def out(vm: VM, x: int): 
-    result.append(x % 8)
+def out(vm: VM, x: int): result.append(x % 8)
 
 def jnz(vm: VM, x: int):
     if vm.registers[0] == 0: return
@@ -64,12 +60,13 @@ def eval(vm: VM):
     if opcode != 1: operand = eval_operand(vm, operand) # bxl uses LITERAL operand
     # print(op_names[opcode], opcode, operand, operand, vm.registers, vm.instruction_pointer)
     vm.instruction_pointer += 2
-    return eval_opcode(vm, opcode, operand)
+    eval_opcode(vm, opcode, operand)
 
 def eval_all(vm: VM):
     while vm.instruction_pointer < len(vm.instructions):
         eval(vm)
 
+vm = VM(instructions, 0, registers)
 eval_all(vm)
 
 print(",".join([str(x) for x in result]))
